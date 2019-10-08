@@ -35,9 +35,9 @@ app.use('/users', usersRouter);
 var io=socket(server);
 io.on('connection',(socket)=>{
     console.log('a user connected');
-    socket.on('stream',(vid)=>{
-        console.log(vid);
-        socket.broadcast.emit('draw');
+    socket.on('newDraw',()=>{
+        console.log('node app hit newDraw');
+        socket.emit('draw');
     });
     socket.on('disconnect',()=>{
         console.log('a user disconnected');
