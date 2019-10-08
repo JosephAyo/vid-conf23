@@ -36,7 +36,7 @@ var io=socket(server);
 io.on('connection',(socket)=>{
     console.log('a user connected');
     socket.on('newDraw',()=>{
-        console.log('node app hit newDraw');
+        console.log('node app hit newDraw##################################################+++++++++++++++++++++++++===========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
         socket.emit('draw');
     });
     socket.on('disconnect',()=>{

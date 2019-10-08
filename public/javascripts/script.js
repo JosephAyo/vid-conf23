@@ -14,7 +14,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     }).then(function (stream) {
         //video.src = window.URL.createObjectURL(stream);
         videoElement.srcObject = stream;
-        socket.emit('stream',stream);
+        socket.emit('newDraw');
         videoElement.play();
     });
 } else if (navigator.getUserMedia) { // Standard
