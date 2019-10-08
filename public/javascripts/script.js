@@ -1,5 +1,5 @@
-const socket =  io.connect('http://localhost:3000/');
-// io.connect('https://vid-conf23.herokuapp.com/') ||
+const socket =  io.connect('https://vid-conf23.herokuapp.com/');
+// io.connect('http://localhost:3000/') ||
 var videoElement = document.getElementById('video');
 var canvasElement = document.getElementById('canvas');
 var context = canvasElement.getContext('2d');
@@ -14,7 +14,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     }).then(function (stream) {
         //video.src = window.URL.createObjectURL(stream);
         videoElement.srcObject = stream;
-        socket.emit('newDraw');
+        socket.emit('stream',stream);
         videoElement.play();
     });
 } else if (navigator.getUserMedia) { // Standard
