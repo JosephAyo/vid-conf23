@@ -1,4 +1,4 @@
-const socket = io.connect('https://desolate-retreat-23275.herokuapp.com/') || io.connect('http://192.168.8.113:3000/');
+const socket = io.connect('https://vid-conf23.herokuapp.com/') || io.connect('http://192.168.8.113:3000/');
 var videoElement = document.getElementById('video');
 var canvasElement = document.getElementById('canvas');
 var context = canvasElement.getContext('2d');
