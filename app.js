@@ -8,9 +8,9 @@ var socket = require('socket.io');
 const ip = require('ip');
 
 
-const port = process.env.port || 3000;
+const port = process.env.PORT || 3000;
 
-var server= app.listen(port,'0.0.0.0', () => {
+var server= app.listen(port, () => {
     console.log(ip.address());
     console.log(`app is listening on port: ${ip.address()}:${port}`);
 });
