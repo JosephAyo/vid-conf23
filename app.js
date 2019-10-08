@@ -11,8 +11,7 @@ const ip = require('ip');
 const port = process.env.PORT || 3000;
 
 var server= app.listen(port, () => {
-    console.log(ip.address());
-    console.log(`app is listening on port: ${ip.address()}:${port}`);
+    console.log(`app is listening on port: ${port}`);
 });
 
 
@@ -20,7 +19,7 @@ var server= app.listen(port, () => {
 var usersRouter = require('./routes/users');
 
 
-app.use(logger('dev'));
+// app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({
     extended: false
@@ -36,6 +35,10 @@ app.use('/users', usersRouter);
 var io=socket(server);
 io.on('connection',(socket)=>{
     console.log('a user connected');
+    socket.on('stream',(vid)=>{
+        console.log(vid);
+        socket.broadcast.emit('draw');
+    });
     socket.on('disconnect',()=>{
         console.log('a user disconnected');
     });
