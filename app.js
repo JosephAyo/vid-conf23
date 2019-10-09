@@ -35,6 +35,10 @@ app.use('/users', usersRouter);
 var io=socket(server);
 io.on('connection',(socket)=>{
     console.log('a user connected');
+    socket.on('chat',(message)=>{
+        console.log('message: '+ message);
+        socket.broadcast.emit('message', message);
+    });
     socket.on('newDraw',()=>{
         console.log('node app hit newDraw##################################################+++++++++++++++++++++++++===========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
         socket.emit('draw');

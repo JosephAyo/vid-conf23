@@ -50,7 +50,7 @@ socket.on('draw',()=>{
     setInterval(() => {
         context.drawImage(videoElement, 0, 0, 640, 480);
     }, 1000 / fps);
-})
+});
 
 
 
