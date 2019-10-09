@@ -39,6 +39,9 @@ io.on('connection',(socket)=>{
         console.log('message: '+ message);
         socket.broadcast.emit('message', message);
     });
+    socket.on('stream',stream=>{
+        console.log('stream',stream);
+    });
     socket.on('newDraw',(vidSrc)=>{
         console.log('node app hit newDraw##################################################++>>');
         socket.broadcast.emit('draw',vidSrc);
