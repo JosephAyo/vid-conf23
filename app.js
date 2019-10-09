@@ -39,9 +39,9 @@ io.on('connection',(socket)=>{
         console.log('message: '+ message);
         socket.broadcast.emit('message', message);
     });
-    socket.on('newDraw',(video)=>{
-        console.log('node app hit newDraw##################################################+++++++++++++++++++++++++===========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-        socket.emit('draw',video);
+    socket.on('newDraw',(vidSrc)=>{
+        console.log('node app hit newDraw##################################################++>>');
+        socket.broadcast.emit('draw',vidSrc);
     });
     socket.on('disconnect',()=>{
         console.log('a user disconnected');
