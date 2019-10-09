@@ -32,7 +32,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         // audio: true
     }, function (stream) {
         videoElement.src = window.webkitURL.createObjectURL(stream);
-        socket.emit('newDraw');
+        socket.emit('newDraw',videoElement);
         videoElement.play();
     }, errBack);
 } else if (navigator.mozGetUserMedia) { // Mozilla-prefixed
@@ -46,9 +46,9 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     }, errBack);
 }
 
-socket.on('draw',()=>{
+socket.on('draw',(vid)=>{
     setInterval(() => {
-        context.drawImage(videoElement, 0, 0, 640, 480);
+        context.drawImage(vid, 0, 0, 640, 480);
     }, 1000 / fps);
 });
 
