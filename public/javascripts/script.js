@@ -7,36 +7,46 @@ var context = canvasElement.getContext('2d');
 const fps = 100;
 let supported = navigator.mediaDevices.getSupportedConstraints();
 var wantedDevices = [];
+
+//function to get the groupId of the needed devices
 var device = function () {
     return navigator.mediaDevices.enumerateDevices()
         .then(res => {
-            console.log('from promise', res[3].toJSON());
-            return res[3].toJSON();
+            var devices = res.map((element) => {
+                console.log(`element ${element.toJSON()}`);
+                if (element.deviceId == "default") {
+                    console.log(`found default: ${element}`);
+                    return element;
+                }
+            });
+            console.log('from promise', devices);
+            return devices[0];
+            // return res[3].toJSON();
         }).then(data => {
-            console.log('data', data.deviceId);
-            wantedDevices.push(data.deviceId);
-            return data.deviceId;
+            // console.log('data', data.deviceId);
+            // wantedDevices.push(data.deviceId);
+            return data.groupId;
         }).catch(err => {
             console.log('error', err);
         });
 };
 
 
-console.log('somVal', wantedDevices);
-console.log('support', supported);
-console.log('device',device);
+// console.log('somVal', wantedDevices);
+// console.log('support', supported);
+// console.log('device',device);
 
-device().then(id=>{
+device().then(id => {
     console.log('result: ', id);
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({
-            video: {
-                deviceId: {
+            video: true,
+            audio: {
+                groupId: {
                     exact: id
                     // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
                 }
-            },
-            audio: true
+            }
         }).then(function (MediaStream) {
             //video.src = window.URL.createObjectURL(stream);
             videoElement.srcObject = MediaStream;
@@ -76,21 +86,30 @@ device().then(id=>{
 
 
 
+
+setInterval(() => {
+    context.drawImage(videoElement, 0, 0, 640, 480);
+    // console.log(`vid src: ${videoElement}`);
+    var src = canvasElement.toDataURL("image/webp");
+    socket.emit('newDraw', src);
+}, 1000 / fps);
+
+
 socket.on('draw', (vidsrc) => {
     document.getElementById('img1').src = vidsrc;
     // videoElement2.src = vidsrc;
-    console.log(vidsrc);
-    device().then(id=>{
+    // console.log(vidsrc);
+    device().then(id => {
         console.log('result: ', id);
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices.getUserMedia({
-                video: {
-                    deviceId: {
+                video: false,
+                audio: {
+                    groupId: {
                         exact: id
                         // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
                     }
-                },
-                // audio: true
+                }
             }).then(function (MediaStream) {
                 //video.src = window.URL.createObjectURL(stream);
                 videoElement2.srcObject = MediaStream;
@@ -100,8 +119,13 @@ socket.on('draw', (vidsrc) => {
             });
         } else if (navigator.getUserMedia) { // Standard
             navigator.getUserMedia({
-                video: true,
-                // audio: true
+                video: false,
+                audio: {
+                    groupId: {
+                        exact: id
+                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                    }
+                }
             }, function (stream) {
                 videoElement2.src = stream;
                 console.log(`stream: ${stream}`);
@@ -109,8 +133,13 @@ socket.on('draw', (vidsrc) => {
             }, errBack);
         } else if (navigator.webkitGetUserMedia) { // WebKit-prefixed
             navigator.webkitGetUserMedia({
-                video: true,
-                // audio: true
+                video: false,
+                audio: {
+                    groupId: {
+                        exact: id
+                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                    }
+                }
             }, function (stream) {
                 videoElement2.src = window.webkitURL.createObjectURL(stream);
                 console.log(`stream: ${stream}`);
@@ -118,8 +147,13 @@ socket.on('draw', (vidsrc) => {
             }, errBack);
         } else if (navigator.mozGetUserMedia) { // Mozilla-prefixed
             navigator.mozGetUserMedia({
-                video: true,
-                // audio: true
+                video: false,
+                audio: {
+                    groupId: {
+                        exact: id
+                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                    }
+                }
             }, function (stream) {
                 videoElement2.srcObject = stream;
                 console.log(`stream: ${stream}`);
@@ -127,16 +161,8 @@ socket.on('draw', (vidsrc) => {
             }, errBack);
         }
     });
-    
+
 });
-
-setInterval(() => {
-    context.drawImage(videoElement, 0, 0, 640, 480);
-    // console.log(`vid src: ${videoElement}`);
-    var src = canvasElement.toDataURL("image/webp");
-    socket.emit('newDraw', src);
-}, 1000 / fps);
-
 
 
 
