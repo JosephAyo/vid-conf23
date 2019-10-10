@@ -1,8 +1,9 @@
-const socket = io.connect('https://vid-conf23.herokuapp.com/');
-//io.connect('http://localhost:3000/') ||
+const socket = io.connect('http://localhost:3000/');
+//io.connect('https://vid-conf23.herokuapp.com/')||
 var videoElement = document.getElementById('video');
 var videoElement2 = document.getElementById('video-2');
 var canvasElement = document.getElementById('canvas');
+var stopButton = document.getElementById('stopBtn');
 var context = canvasElement.getContext('2d');
 const fps = 100;
 let supported = navigator.mediaDevices.getSupportedConstraints();
@@ -25,7 +26,7 @@ var device = function () {
         }).then(data => {
             // console.log('data', data.deviceId);
             // wantedDevices.push(data.deviceId);
-            return data.groupId;
+            return data;
         }).catch(err => {
             console.log('error', err);
         });
@@ -36,15 +37,18 @@ var device = function () {
 // console.log('support', supported);
 // console.log('device',device);
 
-device().then(id => {
-    console.log('result: ', id);
+device().then(deviceInfo => {
+    console.log('result: ', deviceInfo);
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({
             video: true,
             audio: {
                 groupId: {
-                    exact: id
+                    exact: deviceInfo.groupId
                     // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                },
+                kind:{
+                    exact: "audioinput"
                 }
             }
         }).then(function (MediaStream) {
@@ -84,7 +88,10 @@ device().then(id => {
     }
 });
 
-
+stopButton.addEventListener('click', () => {
+    // Stop all video streams.
+    videoElement.srcObject.getVideoTracks().forEach(track => track.stop());
+});
 
 
 setInterval(() => {
@@ -99,15 +106,18 @@ socket.on('draw', (vidsrc) => {
     document.getElementById('img1').src = vidsrc;
     // videoElement2.src = vidsrc;
     // console.log(vidsrc);
-    device().then(id => {
-        console.log('result: ', id);
+    device().then(deviceInfo => {
+        console.log('result: ', deviceInfo);
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices.getUserMedia({
                 video: false,
                 audio: {
                     groupId: {
-                        exact: id
+                        exact: deviceInfo.groupId
                         // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                    },
+                    kind:{
+                        exact: "audiooutput"
                     }
                 }
             }).then(function (MediaStream) {
