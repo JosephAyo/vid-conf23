@@ -2,6 +2,7 @@ const socket = io.connect('https://vid-conf23.herokuapp.com/');
 //io.connect('http://localhost:3000/')||
 var videoElement = document.getElementById('video');
 var videoElement2 = document.getElementById('video-2');
+var audioElement  = document.getElementById('aud');
 var canvasElement = document.getElementById('canvas');
 var stopButton = document.getElementById('stopBtn');
 var context = canvasElement.getContext('2d');
@@ -23,10 +24,6 @@ var device = function () {
             console.log('from promise', devices);
             return devices[0];
             // return res[3].toJSON();
-        }).then(data => {
-            // console.log('data', data.deviceId);
-            // wantedDevices.push(data.deviceId);
-            return data;
         }).catch(err => {
             console.log('error', err);
         });
@@ -122,52 +119,64 @@ socket.on('draw', (vidsrc) => {
                 }
             }).then(function (MediaStream) {
                 //video.src = window.URL.createObjectURL(stream);
-                videoElement2.srcObject = MediaStream;
+                audioElement.srcObject = MediaStream;
                 window.stream = MediaStream;
                 console.log(`stream: ${MediaStream}`);
-                videoElement2.play();
+                audioElement.play();
             });
         } else if (navigator.getUserMedia) { // Standard
             navigator.getUserMedia({
                 video: false,
                 audio: {
                     groupId: {
-                        exact: id
+                        exact: deviceInfo.groupId
                         // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                    },
+                    kind:{
+                        exact: "audiooutput"
                     }
                 }
             }, function (stream) {
-                videoElement2.src = stream;
-                console.log(`stream: ${stream}`);
-                videoElement2.play();
+                audioElement.srcObject = MediaStream;
+                window.stream = MediaStream;
+                console.log(`stream: ${MediaStream}`);
+                audioElement.play();
             }, errBack);
         } else if (navigator.webkitGetUserMedia) { // WebKit-prefixed
             navigator.webkitGetUserMedia({
                 video: false,
                 audio: {
                     groupId: {
-                        exact: id
+                        exact: deviceInfo.groupId
                         // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                    },
+                    kind:{
+                        exact: "audiooutput"
                     }
                 }
             }, function (stream) {
-                videoElement2.src = window.webkitURL.createObjectURL(stream);
-                console.log(`stream: ${stream}`);
-                videoElement2.play();
+                audioElement.srcObject = MediaStream;
+                window.stream = MediaStream;
+                console.log(`stream: ${MediaStream}`);
+                audioElement.play();
             }, errBack);
         } else if (navigator.mozGetUserMedia) { // Mozilla-prefixed
             navigator.mozGetUserMedia({
                 video: false,
                 audio: {
                     groupId: {
-                        exact: id
+                        exact: deviceInfo.groupId
                         // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                    },
+                    kind:{
+                        exact: "audiooutput"
                     }
                 }
             }, function (stream) {
-                videoElement2.srcObject = stream;
-                console.log(`stream: ${stream}`);
-                videoElement2.play();
+                audioElement.srcObject = MediaStream;
+                window.stream = MediaStream;
+                console.log(`stream: ${MediaStream}`);
+                audioElement.play();    
             }, errBack);
         }
     });
