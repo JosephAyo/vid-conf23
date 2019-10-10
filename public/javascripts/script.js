@@ -16,10 +16,7 @@ var device = function () {
         .then(res => {
             var devices = res.map((element) => {
                 console.log(`element ${element.toJSON()}`);
-                if (element.deviceId == "default") {
-                    console.log(`found default: ${element}`);
-                    return element;
-                }
+                return element;
             });
             console.log('from promise', devices);
             return devices[0];
@@ -31,12 +28,13 @@ var device = function () {
 
 
 // console.log('somVal', wantedDevices);
-// console.log('support', supported);
+console.log('support', supported);
 // console.log('device',device);
 
 device().then(deviceInfo => {
     console.log('result: ', deviceInfo);
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        console.log(`first`);
         navigator.mediaDevices.getUserMedia({
             video: true,
             audio: {
@@ -56,27 +54,54 @@ device().then(deviceInfo => {
             videoElement.play();
         });
     } else if (navigator.getUserMedia) { // Standard
+        console.log(`standard`);
         navigator.getUserMedia({
             video: true,
-            // audio: true
+            audio: {
+                groupId: {
+                    exact: deviceInfo.groupId
+                    // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                },
+                kind:{
+                    exact: "audioinput"
+                }
+            }
         }, function (stream) {
             videoElement.src = stream;
             console.log(`stream: ${stream}`);
             videoElement.play();
         }, errBack);
     } else if (navigator.webkitGetUserMedia) { // WebKit-prefixed
+        console.log(`webkit`);
         navigator.webkitGetUserMedia({
             video: true,
-            // audio: true
+            audio: {
+                groupId: {
+                    exact: deviceInfo.groupId
+                    // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                },
+                kind:{
+                    exact: "audioinput"
+                }
+            }
         }, function (stream) {
             videoElement.src = window.webkitURL.createObjectURL(stream);
             console.log(`stream: ${stream}`);
             videoElement.play();
         }, errBack);
     } else if (navigator.mozGetUserMedia) { // Mozilla-prefixed
+        console.log(`moz`);
         navigator.mozGetUserMedia({
             video: true,
-            // audio: true
+            audio: {
+                groupId: {
+                    exact: deviceInfo.groupId
+                    // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                },
+                kind:{
+                    exact: "audioinput"
+                }
+            }
         }, function (stream) {
             videoElement.srcObject = stream;
             console.log(`stream: ${stream}`);
