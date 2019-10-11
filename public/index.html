@@ -1,33 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-  <title>Express</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
-  <script src="vue.js"></script>
+    <title>Express</title>
+    <link rel="stylesheet" href="/stylesheets/style2.css">
 </head>
 
 <body>
-  <div id="app">
-    <button id="stopBtn">Stop stream</button>
-    <h1>Vid Conf</h1>
-    <video width="240" height="330" id="video" autoplay muted></video>
-    <audio autoplay id="aud"></audio>
-    <canvas id="canvas" width="640" height="480"></canvas>
-    <img src="" alt="image" id="img1">
-    <!-- <video width="240" height="330" id="video-2" autoplay></video> -->
-  </div>
-  <div class="container-div">
-    <div class="form-div">
-      <ul id="messages"></ul>
-      <form action="">
-        <input id="message" autocomplete="off" autofocus=true/><button>Send</button>
-      </form>
+    <div class="container-div">
+        <h1>SignUp</h1>
+        <div class="form-div">
+            <form action="/signup" name="signupForm" method="post" autocomplete="off">
+                <input type="text" name="username" required placeholder="USERNAME"><br><br>
+                <input type="password" name="password" required placeholder="PASSWORD"><br><br>
+                <button type="submit">Submit</button>
+            </form>
+            <form action="/login_page" method="get">
+                <button type="submit">Go to login page</button>
+            </form>
+        </div>
     </div>
-  </div>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="./javascripts/script.js"></script>
-  <script src="./javascripts/chat.js"></script>
 </body>
 
 </html>

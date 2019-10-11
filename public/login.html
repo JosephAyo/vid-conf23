@@ -1,0 +1,53 @@
+<html>
+
+<head>
+    <title>Express</title>
+    <link rel="stylesheet" href="/stylesheets/style2.css">
+</head>
+
+<body>
+    <div class="container-div">
+        <h1>Log In</h1>
+        <div class="form-div">
+            <form id="form" name="loginForm" autocomplete="off">
+                <input type="text" name="username" placeholder="username" required>
+                <input type="password" name="password" placeholder="password" required>
+                <input type="button" onclick="sendDetails()" value="Login">
+            </form>
+            <!-- <form action="/login_page" method="post">
+            <button type="submit">Go to login page</button>
+            </form> -->
+        </div>
+    </div>
+    <script>
+        function sendDetails() {
+            const name = document.loginForm.username.value;
+            const password = document.loginForm.password.value;
+            const rawData = {
+                username: name,
+                password: password
+            }
+            const data = JSON.stringify(rawData);
+            fetch('/login', {
+                method: "POST",
+                body: data,
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(res => {
+                return res.json();
+            }).then(data => {
+                console.log(data);
+                if(data){
+                window.localStorage.setItem('user', JSON.stringify(data.username));
+                window.location.href= '/stream.html';
+                }else{
+                    console.log('else');
+                    window.location.href= '/unknown.html';
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

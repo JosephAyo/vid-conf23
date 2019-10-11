@@ -1,0 +1,37 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.container-div{
+  text-align: center;
+}
+
+.form-div{
+  background:#f9f9f9;
+  border:1px solid #ddd;
+  border-radius:3px;
+  padding:12px;
+}
+
+input{
+  border-color: rgb(14, 69, 133);
+  border-width: 2px;
+  border-style: solid;
+}
+
+a {
+  color: #00B7FF;
+}
+
+ul{
+  list-style-type: none;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+}

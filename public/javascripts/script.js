@@ -1,14 +1,151 @@
 const socket = io.connect('https://vid-conf23.herokuapp.com/');
-//io.connect('http://localhost:3000/')||
+//||io.connect('http://localhost:3000/')
+
+new Vue({
+    el: '#app',
+    data: {
+        User: (JSON.parse(window.localStorage.getItem('user'))),
+        Users: [],
+        index: 0,
+        viewedUserGen: '',
+        show: false
+    },
+    methods: {
+        allUsers: function () {
+            console.log('hit get all users');
+            var vm = this;
+            fetch('/users', {
+                method: 'GET',
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => {
+                return res.json();
+            }).then(data => {
+                // console.log(data);
+                vm.Users = data.users;
+                console.log(vm.Users);
+            }).catch(err => {
+                console.log(`error: ${err}`);
+            });
+        },
+        fetchUser: function () {
+            this.show = true;
+            console.log(this.Users[this.index].data._id);
+            this.viewedUserGen = this.Users[this.index];
+            window.localStorage.setItem('calledUser', JSON.stringify(this.Users[this.index].data.username));
+        }
+    }
+});
+
 var videoElement = document.getElementById('video');
 var videoElement2 = document.getElementById('video-2');
-var audioElement  = document.getElementById('aud');
+var audioElement = document.getElementById('aud');
 var canvasElement = document.getElementById('canvas');
 var stopButton = document.getElementById('stopBtn');
 var context = canvasElement.getContext('2d');
 const fps = 100;
 let supported = navigator.mediaDevices.getSupportedConstraints();
 var wantedDevices = [];
+
+function call() {
+    var caller = JSON.parse(window.localStorage.getItem('user'));
+    var called = JSON.parse(window.localStorage.getItem('calledUser'));
+    if (caller == called) {
+        alert("You can't call yourself");
+    } else {
+        socket.emit('dialling', JSON.parse(window.localStorage.getItem('calledUser')));
+        socket.on('pickUp', dialled => {
+            if (caller == dialled) {
+                socket.on('draw', (vidsrc) => {
+                    document.getElementById('img1').src = vidsrc;
+                    // videoElement2.src = vidsrc;
+                    // console.log(vidsrc);
+                    device().then(deviceInfo => {
+                        console.log('result: ', deviceInfo);
+                        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                            navigator.mediaDevices.getUserMedia({
+                                video: false,
+                                audio: {
+                                    groupId: {
+                                        exact: deviceInfo.groupId
+                                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                                    },
+                                    kind: {
+                                        exact: "audiooutput"
+                                    }
+                                }
+                            }).then(function (MediaStream) {
+                                //video.src = window.URL.createObjectURL(stream);
+                                audioElement.srcObject = MediaStream;
+                                window.stream = MediaStream;
+                                console.log(`stream: ${MediaStream}`);
+                                audioElement.play();
+                            });
+                        } else if (navigator.getUserMedia) { // Standard
+                            navigator.getUserMedia({
+                                video: false,
+                                audio: {
+                                    groupId: {
+                                        exact: deviceInfo.groupId
+                                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                                    },
+                                    kind: {
+                                        exact: "audiooutput"
+                                    }
+                                }
+                            }, function (MediaStream) {
+                                audioElement.srcObject = MediaStream;
+                                window.stream = MediaStream;
+                                console.log(`stream: ${MediaStream}`);
+                                audioElement.play();
+                            }, errBack);
+                        } else if (navigator.webkitGetUserMedia) { // WebKit-prefixed
+                            navigator.webkitGetUserMedia({
+                                video: false,
+                                audio: {
+                                    groupId: {
+                                        exact: deviceInfo.groupId
+                                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                                    },
+                                    kind: {
+                                        exact: "audiooutput"
+                                    }
+                                }
+                            }, function (MediaStream) {
+                                audioElement.srcObject = MediaStream;
+                                window.stream = MediaStream;
+                                console.log(`stream: ${MediaStream}`);
+                                audioElement.play();
+                            }, errBack);
+                        } else if (navigator.mozGetUserMedia) { // Mozilla-prefixed
+                            navigator.mozGetUserMedia({
+                                video: false,
+                                audio: {
+                                    groupId: {
+                                        exact: deviceInfo.groupId
+                                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                                    },
+                                    kind: {
+                                        exact: "audiooutput"
+                                    }
+                                }
+                            }, function (MediaStream) {
+                                audioElement.srcObject = MediaStream;
+                                window.stream = MediaStream;
+                                console.log(`stream: ${MediaStream}`);
+                                audioElement.play();
+                            }, errBack);
+                        }
+                    });
+                });
+            } else {
+                console.log('this called is not for you');
+            }
+        });
+    }
+}
 
 //function to get the groupId of the needed devices
 var device = function () {
@@ -42,7 +179,7 @@ device().then(deviceInfo => {
                     exact: deviceInfo.groupId
                     // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
                 },
-                kind:{
+                kind: {
                     exact: "audioinput"
                 }
             }
@@ -62,7 +199,7 @@ device().then(deviceInfo => {
                     exact: deviceInfo.groupId
                     // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
                 },
-                kind:{
+                kind: {
                     exact: "audioinput"
                 }
             }
@@ -80,7 +217,7 @@ device().then(deviceInfo => {
                     exact: deviceInfo.groupId
                     // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
                 },
-                kind:{
+                kind: {
                     exact: "audioinput"
                 }
             }
@@ -98,7 +235,7 @@ device().then(deviceInfo => {
                     exact: deviceInfo.groupId
                     // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
                 },
-                kind:{
+                kind: {
                     exact: "audioinput"
                 }
             }
@@ -124,89 +261,7 @@ setInterval(() => {
 }, 1000 / fps);
 
 
-socket.on('draw', (vidsrc) => {
-    document.getElementById('img1').src = vidsrc;
-    // videoElement2.src = vidsrc;
-    // console.log(vidsrc);
-    device().then(deviceInfo => {
-        console.log('result: ', deviceInfo);
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({
-                video: false,
-                audio: {
-                    groupId: {
-                        exact: deviceInfo.groupId
-                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
-                    },
-                    kind:{
-                        exact: "audiooutput"
-                    }
-                }
-            }).then(function (MediaStream) {
-                //video.src = window.URL.createObjectURL(stream);
-                audioElement.srcObject = MediaStream;
-                window.stream = MediaStream;
-                console.log(`stream: ${MediaStream}`);
-                audioElement.play();
-            });
-        } else if (navigator.getUserMedia) { // Standard
-            navigator.getUserMedia({
-                video: false,
-                audio: {
-                    groupId: {
-                        exact: deviceInfo.groupId
-                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
-                    },
-                    kind:{
-                        exact: "audiooutput"
-                    }
-                }
-            }, function (stream) {
-                audioElement.srcObject = MediaStream;
-                window.stream = MediaStream;
-                console.log(`stream: ${MediaStream}`);
-                audioElement.play();
-            }, errBack);
-        } else if (navigator.webkitGetUserMedia) { // WebKit-prefixed
-            navigator.webkitGetUserMedia({
-                video: false,
-                audio: {
-                    groupId: {
-                        exact: deviceInfo.groupId
-                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
-                    },
-                    kind:{
-                        exact: "audiooutput"
-                    }
-                }
-            }, function (stream) {
-                audioElement.srcObject = MediaStream;
-                window.stream = MediaStream;
-                console.log(`stream: ${MediaStream}`);
-                audioElement.play();
-            }, errBack);
-        } else if (navigator.mozGetUserMedia) { // Mozilla-prefixed
-            navigator.mozGetUserMedia({
-                video: false,
-                audio: {
-                    groupId: {
-                        exact: deviceInfo.groupId
-                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
-                    },
-                    kind:{
-                        exact: "audiooutput"
-                    }
-                }
-            }, function (stream) {
-                audioElement.srcObject = MediaStream;
-                window.stream = MediaStream;
-                console.log(`stream: ${MediaStream}`);
-                audioElement.play();    
-            }, errBack);
-        }
-    });
 
-});
 
 
 
