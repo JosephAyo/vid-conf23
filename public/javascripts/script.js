@@ -55,8 +55,10 @@ function call() {
     if (caller == called) {
         alert("You can't call yourself");
     } else {
-        socket.emit('dialling', JSON.parse(window.localStorage.getItem('calledUser')));
+        console.log(`placing a call to ${called}`);
+        socket.emit('dialling', called);
         socket.on('pickUp', dialled => {
+            //allow stream if the dialled user coincides with the presently logged in user
             if (caller == dialled) {
                 socket.on('draw', (vidsrc) => {
                     document.getElementById('img1').src = vidsrc;
