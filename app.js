@@ -58,10 +58,10 @@ io.on('connection',(socket)=>{
     });
     socket.on('newDraw',(vidSrc)=>{
         // console.log('node app hit newDraw##################################################++>>');
-        socket.broadcast.emit('draw',vidSrc);
+        socket.emit('draw',vidSrc);
     });
     socket.on('dialling',(dialledUser)=>{
-        socket.broadcast.emit('pickUp',dialledUser);
+        socket.emit('pickUp',dialledUser);
         console.log(`dialled User: ${dialledUser}`);
     });
     socket.on('disconnect',()=>{
