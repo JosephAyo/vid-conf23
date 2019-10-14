@@ -1,6 +1,8 @@
 const socket = io.connect('https://vid-conf23.herokuapp.com/');
 //||io.connect('http://localhost:3000/')
 
+
+//Vue APP
 new Vue({
     el: '#app',
     data: {
@@ -45,10 +47,19 @@ var audioElement = document.getElementById('aud');
 var canvasElement = document.getElementById('canvas');
 var stopButton = document.getElementById('stopBtn');
 var context = canvasElement.getContext('2d');
-const fps = 100;
-let supported = navigator.mediaDevices.getSupportedConstraints();
-var wantedDevices = [];
 
+//FRAMES PER SECOND (THIS WILL BE CHANGED TO A VARYING VALUE SO AS TO ALLOW
+// FOR SO FRAMES TO BE SKIPPED IN CASE OF POOR NETWORK CONNECTION)
+const fps = 100;
+
+
+//GET CONSTRAINTS 
+let supported = navigator.mediaDevices.getSupportedConstraints();
+
+
+//CALL FUNCTION TO CONNECT TWO CURRENTLY LOGGED IN USERS
+//IT BASICALLY CONTINOUSLY RENDER IN A IMAGE ELEMENT THE VIDEO FEED FROM A USER 
+//TO ANOTHERS' SCREEN
 function call() {
     var caller = JSON.parse(window.localStorage.getItem('user'));
     var called = JSON.parse(window.localStorage.getItem('calledUser'));
@@ -62,6 +73,7 @@ function call() {
             if (caller == dialled) {
                 socket.on('draw', (vidsrc) => {
                     document.getElementById('img1').src = vidsrc;
+                    console.log(`${dialled}, you have received a call`);
                     // videoElement2.src = vidsrc;
                     // console.log(vidsrc);
                     device().then(deviceInfo => {
@@ -149,7 +161,7 @@ function call() {
     }
 }
 
-//function to get the groupId of the needed devices
+//function to get id information of the needed devices
 var device = function () {
     return navigator.mediaDevices.enumerateDevices()
         .then(res => {
@@ -166,8 +178,7 @@ var device = function () {
 };
 
 
-// console.log('somVal', wantedDevices);
-console.log('support', supported);
+// console.log('support', supported);
 // console.log('device',device);
 
 device().then(deviceInfo => {
@@ -179,7 +190,6 @@ device().then(deviceInfo => {
             audio: {
                 groupId: {
                     exact: deviceInfo.groupId
-                    // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
                 },
                 kind: {
                     exact: "audioinput"
@@ -199,7 +209,6 @@ device().then(deviceInfo => {
             audio: {
                 groupId: {
                     exact: deviceInfo.groupId
-                    // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
                 },
                 kind: {
                     exact: "audioinput"
@@ -254,7 +263,7 @@ stopButton.addEventListener('click', () => {
     videoElement.srcObject.getVideoTracks().forEach(track => track.stop());
 });
 
-
+//
 setInterval(() => {
     context.drawImage(videoElement, 0, 0, 640, 480);
     // console.log(`vid src: ${videoElement}`);
