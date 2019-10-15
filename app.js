@@ -57,13 +57,13 @@ io.on('connection',(socket)=>{
         console.log('stream',stream);
     });
     socket.on('newDraw',(vidSrc)=>{
-        // console.log('node app hit newDraw##################################################++>>');
+        console.log(`started new draw`);
         socket.broadcast.emit('draw',vidSrc);
     });
-    socket.on('dialling',(dialledUser)=>{
-        socket.broadcast.emit('pickUp',dialledUser);
-        console.log(`dialling this User: ${dialledUser}`);
-    });
+    // socket.on('dialling',(dialledUser)=>{
+    //     socket.broadcast.emit('pickUp',dialledUser);
+    //     console.log(`dialling this User: ${dialledUser}`);
+    // });
     socket.on('disconnect',()=>{
         console.log('a user disconnected');
     });

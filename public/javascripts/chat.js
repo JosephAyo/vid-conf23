@@ -1,4 +1,4 @@
-let client = io();
+let client = io.connect('https://vid-conf23.herokuapp.com/');
 
 document.forms[0].onsubmit = function(e){
     let input = document.getElementById('message');

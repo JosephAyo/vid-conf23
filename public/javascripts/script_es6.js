@@ -272,7 +272,7 @@ const call= ()=>{
             }
         });
     }
-}
+};
 
 
 // socket.emit('stream',)
