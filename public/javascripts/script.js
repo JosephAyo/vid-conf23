@@ -69,6 +69,7 @@ function call() {
         console.log(`placing a call to ${called}`);
         socket.emit('dialling', called);
         socket.on('pickUp', dialled => {
+            prompt(`a call was placed to ${dialled}`);
             //allow stream if the dialled user coincides with the presently logged in user
             if (caller == dialled) {
                 socket.on('draw', (vidsrc) => {
