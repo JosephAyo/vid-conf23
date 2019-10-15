@@ -32,7 +32,7 @@ new Vue({
                 console.log(`error: ${err}`);
             });
         },
-        fetchUser() {
+        fetchUser:()=> {
             this.show = true;
             console.log(this.Users[this.index].data._id);
             this.viewedUserGen = this.Users[this.index];
