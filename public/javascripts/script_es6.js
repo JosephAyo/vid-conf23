@@ -13,7 +13,7 @@ new Vue({
         show: false
     },
     methods: {
-        allUsers:()=>{
+        allUsers(){
             console.log('hit get all users');
             const vm = this;
             fetch('/users', {
