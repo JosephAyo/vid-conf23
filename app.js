@@ -1,15 +1,15 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
-var logger = require('morgan');
+let express = require('express');
+let path = require('path');
+let cookieParser = require('cookie-parser');
+let bodyParser = require('body-parser');
+let mongoose = require('mongoose');
+let logger = require('morgan');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-var fs = require('fs');
-var app = express();
+let fs = require('fs');
+let app = express();
 const User = require('./models/user');
-var socket = require('socket.io');
+let socket = require('socket.io');
 const ip = require('ip');
 
 const uri ='mongodb+srv://josephayo:mongodb360@cluster0-ys6nl.mongodb.net/test?retryWrites=true&w=majority';
@@ -18,13 +18,13 @@ mongoose.connect(uri);
 mongoose.Promise = global.Promise;
 const port = process.env.PORT || 3000;
 
-var server= app.listen(port, () => {
+let server= app.listen(port, () => {
     console.log(`app is listening on port: ${port}`);
 });
 
 
-// var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// let indexRouter = require('./routes/index');
+let usersRouter = require('./routes/users');
 
 
 app.use(logger('dev'));
@@ -44,7 +44,7 @@ app.use(express.static(path.join(__dirname)));
 app.use('/users', usersRouter);
 
 
-var io=socket(server);
+let io=socket(server);
 
 
 io.on('connection',(socket)=>{
@@ -70,8 +70,8 @@ io.on('connection',(socket)=>{
 });
 
 app.post('/signup', (req, res, next) => {
-    var username = req.body.username;
-    var PlaintextPassword = req.body.password;
+    let username = req.body.username;
+    let PlaintextPassword = req.body.password;
     console.log(req.body);
     User.findOne({
         username: username
@@ -102,8 +102,8 @@ app.get("/login_page", (req, res, next) => {
 });
 
 app.post('/login', function (req, res) {
-    var username = req.body.username;
-    var password = req.body.password;
+    let username = req.body.username;
+    let password = req.body.password;
     console.log(`from post:'/login' ${username}`);
     User.find({
         username: username

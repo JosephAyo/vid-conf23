@@ -1,7 +1,7 @@
-var client = io();
+let client = io();
 
 document.forms[0].onsubmit = function(e){
-    var input = document.getElementById('message');
+    let input = document.getElementById('message');
     // emits a 'chat' event which is then listened for on the backend
     client.emit('chat', input.value);
     input.value = '';
@@ -9,7 +9,7 @@ document.forms[0].onsubmit = function(e){
 };
 
 client.on('message',(message)=>{
-    var li = document.createElement('li');
+    let li = document.createElement('li');
     li.innerText = message;
     document.querySelector("ul#messages").appendChild(li);
 });
