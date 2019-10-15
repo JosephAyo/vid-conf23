@@ -60,107 +60,107 @@ let supported = navigator.mediaDevices.getSupportedConstraints();
 //CALL FUNCTION TO CONNECT TWO CURRENTLY LOGGED IN USERS
 //IT BASICALLY CONTINOUSLY RENDER IN A IMAGE ELEMENT THE VIDEO FEED FROM A USER 
 //TO ANOTHERS' SCREEN
-function call() {
-    var caller = JSON.parse(window.localStorage.getItem('user'));
-    var called = JSON.parse(window.localStorage.getItem('calledUser'));
-    if (caller == called) {
-        alert("You can't call yourself");
-    } else {
-        console.log(`placing a call to ${called}`);
-        socket.emit('dialling', called);
-        socket.on('pickUp', dialled => {
-            prompt(`a call was placed to ${dialled}`);
-            //allow stream if the dialled user coincides with the presently logged in user
-            if (caller == dialled) {
-                socket.on('draw', (vidsrc) => {
-                    document.getElementById('img1').src = vidsrc;
-                    console.log(`${dialled}, you have received a call`);
-                    // videoElement2.src = vidsrc;
-                    // console.log(vidsrc);
-                    device().then(deviceInfo => {
-                        console.log('result: ', deviceInfo);
-                        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                            navigator.mediaDevices.getUserMedia({
-                                video: false,
-                                audio: {
-                                    groupId: {
-                                        exact: deviceInfo.groupId
-                                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
-                                    },
-                                    kind: {
-                                        exact: "audiooutput"
-                                    }
-                                }
-                            }).then(function (MediaStream) {
-                                //video.src = window.URL.createObjectURL(stream);
-                                audioElement.srcObject = MediaStream;
-                                window.stream = MediaStream;
-                                console.log(`stream: ${MediaStream}`);
-                                audioElement.play();
-                            });
-                        } else if (navigator.getUserMedia) { // Standard
-                            navigator.getUserMedia({
-                                video: false,
-                                audio: {
-                                    groupId: {
-                                        exact: deviceInfo.groupId
-                                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
-                                    },
-                                    kind: {
-                                        exact: "audiooutput"
-                                    }
-                                }
-                            }, function (MediaStream) {
-                                audioElement.srcObject = MediaStream;
-                                window.stream = MediaStream;
-                                console.log(`stream: ${MediaStream}`);
-                                audioElement.play();
-                            }, errBack);
-                        } else if (navigator.webkitGetUserMedia) { // WebKit-prefixed
-                            navigator.webkitGetUserMedia({
-                                video: false,
-                                audio: {
-                                    groupId: {
-                                        exact: deviceInfo.groupId
-                                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
-                                    },
-                                    kind: {
-                                        exact: "audiooutput"
-                                    }
-                                }
-                            }, function (MediaStream) {
-                                audioElement.srcObject = MediaStream;
-                                window.stream = MediaStream;
-                                console.log(`stream: ${MediaStream}`);
-                                audioElement.play();
-                            }, errBack);
-                        } else if (navigator.mozGetUserMedia) { // Mozilla-prefixed
-                            navigator.mozGetUserMedia({
-                                video: false,
-                                audio: {
-                                    groupId: {
-                                        exact: deviceInfo.groupId
-                                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
-                                    },
-                                    kind: {
-                                        exact: "audiooutput"
-                                    }
-                                }
-                            }, function (MediaStream) {
-                                audioElement.srcObject = MediaStream;
-                                window.stream = MediaStream;
-                                console.log(`stream: ${MediaStream}`);
-                                audioElement.play();
-                            }, errBack);
-                        }
-                    });
-                });
-            } else {
-                console.log('this called is not for you');
-            }
-        });
-    }
-}
+// function call() {
+//     var caller = JSON.parse(window.localStorage.getItem('user'));
+//     var called = JSON.parse(window.localStorage.getItem('calledUser'));
+//     if (caller == called) {
+//         alert("You can't call yourself");
+//     } else {
+//         console.log(`placing a call to ${called}`);
+//         socket.emit('dialling', called);
+//         socket.on('pickUp', dialled => {
+//             prompt(`a call was placed to ${dialled}`);
+//             //allow stream if the dialled user coincides with the presently logged in user
+//             if (caller == dialled) {
+//                 socket.on('draw', (vidsrc) => {
+//                     document.getElementById('img1').src = vidsrc;
+//                     console.log(`${dialled}, you have received a call`);
+//                     // videoElement2.src = vidsrc;
+//                     // console.log(vidsrc);
+//                     device().then(deviceInfo => {
+//                         console.log('result: ', deviceInfo);
+//                         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+//                             navigator.mediaDevices.getUserMedia({
+//                                 video: false,
+//                                 audio: {
+//                                     groupId: {
+//                                         exact: deviceInfo.groupId
+//                                         // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+//                                     },
+//                                     kind: {
+//                                         exact: "audiooutput"
+//                                     }
+//                                 }
+//                             }).then(function (MediaStream) {
+//                                 //video.src = window.URL.createObjectURL(stream);
+//                                 audioElement.srcObject = MediaStream;
+//                                 window.stream = MediaStream;
+//                                 console.log(`stream: ${MediaStream}`);
+//                                 audioElement.play();
+//                             });
+//                         } else if (navigator.getUserMedia) { // Standard
+//                             navigator.getUserMedia({
+//                                 video: false,
+//                                 audio: {
+//                                     groupId: {
+//                                         exact: deviceInfo.groupId
+//                                         // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+//                                     },
+//                                     kind: {
+//                                         exact: "audiooutput"
+//                                     }
+//                                 }
+//                             }, function (MediaStream) {
+//                                 audioElement.srcObject = MediaStream;
+//                                 window.stream = MediaStream;
+//                                 console.log(`stream: ${MediaStream}`);
+//                                 audioElement.play();
+//                             }, errBack);
+//                         } else if (navigator.webkitGetUserMedia) { // WebKit-prefixed
+//                             navigator.webkitGetUserMedia({
+//                                 video: false,
+//                                 audio: {
+//                                     groupId: {
+//                                         exact: deviceInfo.groupId
+//                                         // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+//                                     },
+//                                     kind: {
+//                                         exact: "audiooutput"
+//                                     }
+//                                 }
+//                             }, function (MediaStream) {
+//                                 audioElement.srcObject = MediaStream;
+//                                 window.stream = MediaStream;
+//                                 console.log(`stream: ${MediaStream}`);
+//                                 audioElement.play();
+//                             }, errBack);
+//                         } else if (navigator.mozGetUserMedia) { // Mozilla-prefixed
+//                             navigator.mozGetUserMedia({
+//                                 video: false,
+//                                 audio: {
+//                                     groupId: {
+//                                         exact: deviceInfo.groupId
+//                                         // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+//                                     },
+//                                     kind: {
+//                                         exact: "audiooutput"
+//                                     }
+//                                 }
+//                             }, function (MediaStream) {
+//                                 audioElement.srcObject = MediaStream;
+//                                 window.stream = MediaStream;
+//                                 console.log(`stream: ${MediaStream}`);
+//                                 audioElement.play();
+//                             }, errBack);
+//                         }
+//                     });
+//                 });
+//             } else {
+//                 console.log('this called is not for you');
+//             }
+//         });
+//     }
+// }
 
 //function to get id information of the needed devices
 var device = function () {
@@ -272,7 +272,89 @@ setInterval(() => {
     socket.emit('newDraw', src);
 }, 1000 / fps);
 
-
+socket.on('draw', (vidsrc) => {
+    document.getElementById('img1').src = vidsrc;
+    console.log(`${dialled}, you have received a call`);
+    // videoElement2.src = vidsrc;
+    // console.log(vidsrc);
+    device().then(deviceInfo => {
+        console.log('result: ', deviceInfo);
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({
+                video: false,
+                audio: {
+                    groupId: {
+                        exact: deviceInfo.groupId
+                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                    },
+                    kind: {
+                        exact: "audiooutput"
+                    }
+                }
+            }).then(function (MediaStream) {
+                //video.src = window.URL.createObjectURL(stream);
+                audioElement.srcObject = MediaStream;
+                window.stream = MediaStream;
+                console.log(`stream: ${MediaStream}`);
+                audioElement.play();
+            });
+        } else if (navigator.getUserMedia) { // Standard
+            navigator.getUserMedia({
+                video: false,
+                audio: {
+                    groupId: {
+                        exact: deviceInfo.groupId
+                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                    },
+                    kind: {
+                        exact: "audiooutput"
+                    }
+                }
+            }, function (MediaStream) {
+                audioElement.srcObject = MediaStream;
+                window.stream = MediaStream;
+                console.log(`stream: ${MediaStream}`);
+                audioElement.play();
+            }, errBack);
+        } else if (navigator.webkitGetUserMedia) { // WebKit-prefixed
+            navigator.webkitGetUserMedia({
+                video: false,
+                audio: {
+                    groupId: {
+                        exact: deviceInfo.groupId
+                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                    },
+                    kind: {
+                        exact: "audiooutput"
+                    }
+                }
+            }, function (MediaStream) {
+                audioElement.srcObject = MediaStream;
+                window.stream = MediaStream;
+                console.log(`stream: ${MediaStream}`);
+                audioElement.play();
+            }, errBack);
+        } else if (navigator.mozGetUserMedia) { // Mozilla-prefixed
+            navigator.mozGetUserMedia({
+                video: false,
+                audio: {
+                    groupId: {
+                        exact: deviceInfo.groupId
+                        // 'b2b92d582ab6037118adba78cfbda558c0f072f410923b87d16e042f75963a8c'
+                    },
+                    kind: {
+                        exact: "audiooutput"
+                    }
+                }
+            }, function (MediaStream) {
+                audioElement.srcObject = MediaStream;
+                window.stream = MediaStream;
+                console.log(`stream: ${MediaStream}`);
+                audioElement.play();
+            }, errBack);
+        }
+    });
+});
 
 
 

@@ -51,7 +51,7 @@ io.on('connection',(socket)=>{
     console.log('a user connected');
     socket.on('chat',(message)=>{
         console.log('message: '+ message);
-        socket.emit('message', message);
+        socket.broadcast.emit('message', message);
     });
     socket.on('stream',stream=>{
         console.log('stream',stream);
@@ -61,7 +61,7 @@ io.on('connection',(socket)=>{
         socket.broadcast.emit('draw',vidSrc);
     });
     socket.on('dialling',(dialledUser)=>{
-        socket.emit('pickUp',dialledUser);
+        socket.broadcast.emit('pickUp',dialledUser);
         console.log(`dialling this User: ${dialledUser}`);
     });
     socket.on('disconnect',()=>{
