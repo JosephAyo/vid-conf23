@@ -3,7 +3,7 @@
 
 <head>
   <title>Express</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
+  <link rel="stylesheet" href="./stylesheets/style.css">
   <script src="vue.js"></script>
 </head>
 
@@ -23,6 +23,7 @@
       <hr>
       <div v-if='show'>
         <h3>{{viewedUserGen.data.username}}'s Profile</h3>
+        <div class="section" :style='indicator'></div>
         <button onclick="call()">Call {{viewedUserGen.data.username}}</button>
       </div>
       <br>
@@ -52,6 +53,23 @@
   <script src="./javascripts/chat.js"></script>
   <script>
     function signOut() {
+      const rawData = {
+        username: JSON.parse(window.localStorage.getItem('user'))
+      };
+      const data = JSON.stringify(rawData);
+      fetch('/users/signOut', {
+        method: 'PATCH',
+        body: data,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(res => {
+        return res.json();
+      }).then(data => {
+        console.log(data);
+      }).catch(err => {
+        console.log(`error: ${err}`);
+      });
       window.localStorage.removeItem('user');
       window.location.href = '/index.html';
     }

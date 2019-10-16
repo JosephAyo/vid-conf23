@@ -9,10 +9,10 @@ const User = require('../models/user');
 router.get('/', function (req, res, next) {
     User.find({})
         .then(function (results) {
-            if(results.length>0){
-                const response ={
+            if (results.length > 0) {
+                const response = {
                     users: results.map(
-                        result=>{
+                        result => {
                             return {
                                 confirmation: 'success',
                                 data: result,
@@ -20,12 +20,12 @@ router.get('/', function (req, res, next) {
                                     method: 'GET',
                                     url: `http://localhost:3000/user/${result._id}`
                                 }
-                            };                        
+                            };
                         }
                     )
                 };
                 res.status(200).json(response);
-            }else {
+            } else {
                 res.status(404).json({
                     message: 'NO ENTRIES FOUND'
                 });
@@ -38,5 +38,34 @@ router.get('/', function (req, res, next) {
             });
         });
 });
+
+
+router.patch('/signOut', (req, res, next) => {
+    const username = req.body.username;
+    User.find({
+            username: username
+        }).then(user => {
+            User.update({
+                username: user[0].username
+            }, {
+                $set: {
+                    onlineStatus: false
+                }
+            }).exec()
+            .then(result => {
+                res.status(200).json({
+                    message: result
+                });
+            })
+            .catch(err => {
+                res.status(500).json({
+                    error: err
+                });
+            });
+        }).catch(err=>{
+            console.log(`error: ${err}`);
+        });
+});
+
 
 module.exports = router;

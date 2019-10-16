@@ -12,13 +12,13 @@ const User = require('./models/user');
 let socket = require('socket.io');
 const ip = require('ip');
 
-const uri ='mongodb+srv://josephayo:mongodb360@cluster0-ys6nl.mongodb.net/test?retryWrites=true&w=majority';
+const uri = 'mongodb+srv://josephayo:mongodb360@cluster0-ys6nl.mongodb.net/test?retryWrites=true&w=majority';
 mongoose.connect(uri);
 
 mongoose.Promise = global.Promise;
 const port = process.env.PORT || 3000;
 
-let server= app.listen(port, () => {
+let server = app.listen(port, () => {
     console.log(`app is listening on port: ${port}`);
 });
 
@@ -44,27 +44,27 @@ app.use(express.static(path.join(__dirname)));
 app.use('/users', usersRouter);
 
 
-let io=socket(server);
+let io = socket(server);
 
 
-io.on('connection',(socket)=>{
+io.on('connection', (socket) => {
     console.log('a user connected');
-    socket.on('chat',(message)=>{
-        console.log('message: '+ message);
+    socket.on('chat', (message) => {
+        console.log('message: ' + message);
         socket.broadcast.emit('message', message);
     });
-    socket.on('stream',stream=>{
-        console.log('stream',stream);
+    socket.on('stream', stream => {
+        console.log('stream', stream);
     });
-    socket.on('newDraw',(vidSrc)=>{
+    socket.on('newDraw', (vidSrc) => {
         console.log(`started new draw`);
-        socket.broadcast.emit('draw',vidSrc);
+        socket.broadcast.emit('draw', vidSrc);
     });
     // socket.on('dialling',(dialledUser)=>{
     //     socket.broadcast.emit('pickUp',dialledUser);
     //     console.log(`dialling this User: ${dialledUser}`);
     // });
-    socket.on('disconnect',()=>{
+    socket.on('disconnect', () => {
         console.log('a user disconnected');
     });
 });
@@ -109,14 +109,34 @@ app.post('/login', function (req, res) {
         username: username
     }, function (err, user) {
         if (err) throw err;
-        if (user.length<1) {
+        if (user.length < 1) {
             console.log('unknown user');
-            res.status(404).json({error:'Invalid username or password!!!'}); 
+            res.status(404).json({
+                error: 'Invalid username or password!!!'
+            });
         } else {
             console.log(`passport saw this ==========> ${user[0].password}`);
             bcrypt.compare(password, user[0].password, function (err, isMatch) {
                 if (err) throw err;
                 if (isMatch) {
+                    User.update({
+                            username: user[0].username
+                        }, {
+                            $set: {
+                                onlineStatus: true
+                            }
+                        })
+                        .exec()
+                        .then(result => {
+                            res.status(200).json({
+                                message: result
+                            });
+                        })
+                        .catch(err => {
+                            res.status(500).json({
+                                error: err
+                            });
+                        });
                     console.log(`SUCCESS ${user[0].username} successfully logged in`);
                     console.log(`user[0]._id: ${user[0]._id}`);
                     res.status(200).json({
@@ -124,11 +144,13 @@ app.post('/login', function (req, res) {
                     });
                 } else {
                     console.log('not confirmed');
-                    res.status(404).json({error:'Invalid username or password!!!'});
+                    res.status(404).json({
+                        error: 'Invalid username or password!!!'
+                    });
                 }
             });
         }
-        
+
     });
 });
 

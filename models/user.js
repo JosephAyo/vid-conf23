@@ -10,6 +10,10 @@ const UserSchema = mongoose.Schema({
     password:{
         type: String,
         trim: true
+    },
+    onlineStatus:{
+        type: Boolean,
+        default: false
     }
 });
 

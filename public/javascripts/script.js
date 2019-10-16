@@ -38,6 +38,15 @@ new Vue({
             this.viewedUserGen = this.Users[this.index];
             window.localStorage.setItem('calledUser', JSON.stringify(this.Users[this.index].data.username));
         }
+    },
+    computed: {
+        indicator() {
+            if(this.viewedUserGen.data.onlineStatus){
+                return {
+                    backgroundColor: 'green'
+                };
+            }
+        }
     }
 });
 
@@ -173,10 +182,8 @@ const call = () => {
         alert("You can't call yourself");
     } else {
         console.log(`placing a call to ${called}`);
-        //allow stream if the dialled user coincides with the presently logged in user
         socket.on('draw', (vidsrc) => {
             document.getElementById('img1').src = vidsrc;
-            console.log(`${dialled}, you have received a call`);
             device().then(deviceInfo => {
                 console.log('result: ', deviceInfo);
                 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {

@@ -43,3 +43,10 @@ form button {
 #messages li:nth-child(odd) {
   background: #eee;
 }
+
+.section {
+  background-color: gray;
+  border-radius: 12px;
+  width: 10px;
+  height: 10px;
+}
